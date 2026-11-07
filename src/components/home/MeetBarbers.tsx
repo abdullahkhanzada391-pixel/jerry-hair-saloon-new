@@ -1,15 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { BARBERS } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { BrandBadge } from '../common/BrandBadge';
 
 export const MeetBarbers: React.FC = () => {
-  const { openBooking } = useBooking();
-
   return (
-    <section className="py-16 md:py-24 lg:py-28 bg-[#121110] relative overflow-hidden border-b border-white/10">
+    <section id="barbers" className="py-16 md:py-24 lg:py-28 bg-[#121110] relative overflow-hidden border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
         {/* Section Header: Eyebrow -> 16px -> H2 -> 16px -> Intro -> 48px (mb-12) */}
         <div className="mb-12">
@@ -78,13 +76,13 @@ export const MeetBarbers: React.FC = () => {
                 </div>
 
                 {/* Book with [Name] Button: h-[52px], rounded-full, mt-auto */}
-                <button
-                  onClick={() => openBooking({ barberId: barber.id })}
-                  className="mt-auto w-full h-[52px] px-6 bg-[#1E1D1A] group-hover:bg-[#C9A24B] text-[#F4EFE8] group-hover:text-[#121110] border border-white/10 group-hover:border-[#C9A24B] text-sm font-bold tracking-wide rounded-full transition-all duration-300 flex items-center justify-center gap-3"
+                <Link
+                  to={`/book?barber=${barber.id}`}
+                  className="mt-auto w-full h-[52px] px-6 bg-[#1E1D1A] group-hover:bg-[#C9A24B] text-[#F4EFE8] group-hover:text-[#121110] border border-white/10 group-hover:border-[#C9A24B] text-sm font-bold tracking-wide rounded-full transition-all duration-300 flex items-center justify-center gap-3 select-none"
                 >
                   <Calendar className="w-5 h-5" />
                   <span>Book with {barber.name.split(' ')[0]}</span>
-                </button>
+                </Link>
               </div>
             </motion.div>
           ))}

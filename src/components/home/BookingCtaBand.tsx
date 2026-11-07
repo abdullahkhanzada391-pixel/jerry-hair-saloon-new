@@ -1,12 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MessageCircle } from 'lucide-react';
 import { SALON_INFO } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { MagneticButton } from '../common/MagneticButton';
 import { BrandBadge } from '../common/BrandBadge';
 
 export const BookingCtaBand: React.FC = () => {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
 
   return (
     <section id="booking" className="py-16 md:py-24 lg:py-28 bg-[#0B0A09] relative overflow-hidden border-b border-white/10">
@@ -35,7 +35,7 @@ export const BookingCtaBand: React.FC = () => {
         {/* Action Buttons: 16px / gap-4 */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
           <MagneticButton
-            onClick={() => openBooking()}
+            onClick={() => navigate('/book')}
             className="w-full sm:w-auto h-[52px] px-8 bg-[#C9A24B] hover:bg-[#DEBA67] text-[#121110] font-bold text-base tracking-wide rounded-full shadow-[0_4px_25px_rgba(201,162,75,0.3)] flex items-center justify-center gap-3 transition-all duration-300"
             aria-label="Book a Chair"
           >

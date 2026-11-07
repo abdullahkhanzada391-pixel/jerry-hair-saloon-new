@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { X, Calendar, Eye } from 'lucide-react';
 import { GALLERY_PHOTOS } from '../config/salonInfo';
 import { GalleryPhoto } from '../types';
-import { useBooking } from '../context/BookingContext';
 import { BrandBadge } from '../components/common/BrandBadge';
 
 export const GalleryPage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'haircuts' | 'beards' | 'salon' | 'dulha'>('all');
   const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title =
       "Lookbook & Chair Work Gallery | Jerry Hair Saloon, Allama Iqbal Town, Lahore";
-    window.scrollTo(0, 0);
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Real client cuts and chair work from Jerry Hair Saloon in Allama Iqbal Town, Lahore. Explore skin fades, beard sculpts, tapers, and dulha grooms.'
+      );
+    }
   }, []);
 
   const filterTabs = [
@@ -37,13 +44,16 @@ export const GalleryPage: React.FC = () => {
     if (photo.category === 'beards') srv = 'beard-trim-shape';
     if (photo.category === 'dulha') srv = 'dulha-groom-package';
 
-    let barber = undefined;
+    let barber: string | undefined = undefined;
     if (photo.barberCredit?.toLowerCase().includes('ali')) barber = 'ali-raza';
     if (photo.barberCredit?.toLowerCase().includes('jerry')) barber = 'jerry';
     if (photo.barberCredit?.toLowerCase().includes('usman')) barber = 'usman-tariq';
     if (photo.barberCredit?.toLowerCase().includes('bilal')) barber = 'bilal-ahmed';
 
-    openBooking({ serviceId: srv, barberId: barber });
+    const url = barber
+      ? `/book?service=${encodeURIComponent(srv)}&barber=${encodeURIComponent(barber)}`
+      : `/book?service=${encodeURIComponent(srv)}`;
+    navigate(url);
   };
 
   return (

@@ -1,13 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { FULL_PRICE_LIST } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { BrandBadge } from '../common/BrandBadge';
 
 export const PrintedPriceList: React.FC = () => {
-  const { openBooking } = useBooking();
-
   return (
     <section
       id="price-list"
@@ -25,27 +23,37 @@ export const PrintedPriceList: React.FC = () => {
             The Price List
           </h2>
 
-          <p className="font-body text-base text-[#68625B] max-w-[65ch] mx-auto">
-            Honest rates, skilled hands. No hidden salon taxes, no surprise product upsells.
+          <p className="font-body text-[#68625B] max-w-[65ch] mx-auto">
+            Honest barbering rates. Single-use feather blades, hot towels, and neck taper included with every chair service.
           </p>
         </div>
 
-        {/* Vintage Paper Container: p-6 lg:p-8 rounded-2xl */}
-        <div className="bg-[#FAF7F2] border border-[#181715]/15 p-6 lg:p-8 shadow-xl rounded-2xl relative">
-          {/* Price Rows (py-4 = 16px per row, dotted leader aligned, price straight column) */}
-          <div className="divide-y divide-[#181715]/10">
+        {/* Printed Card Container */}
+        <div className="bg-[#FAF7F2] border border-[#181715]/15 p-6 lg:p-8 rounded-2xl shadow-xl relative">
+          {/* Card Top Stamp */}
+          <div className="flex items-center justify-between pb-6 border-b border-[#181715]/15 mb-6 text-[13px]">
+            <span className="font-extrabold tracking-editorial uppercase text-[#181715]">
+              Item &amp; Description
+            </span>
+            <span className="font-extrabold tracking-editorial uppercase text-[#181715]">
+              Rate (PKR)
+            </span>
+          </div>
+
+          {/* Service Items with dotted leaders */}
+          <div className="space-y-4">
             {FULL_PRICE_LIST.map((item, idx) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: '-20px' }}
                 transition={{ duration: 0.35, delay: idx * 0.03 }}
-                className="group flex items-center justify-between py-4 hover:bg-black/[0.02] transition-colors px-2 rounded-lg"
+                className="group flex items-center justify-between py-2 transition-colors"
               >
-                {/* Left: Service name & duration */}
-                <div className="flex items-baseline gap-2 min-w-0">
-                  <span className="text-base sm:text-lg font-bold text-[#181715] group-hover:text-[#9F7A2C] transition-colors">
+                {/* Left: Name and Duration */}
+                <div className="flex items-baseline gap-2 min-w-0 pr-2">
+                  <span className="text-base sm:text-lg font-bold text-[#181715] group-hover:text-[#9F7A2C] transition-colors truncate">
                     {item.name}
                   </span>
                   <span className="text-[13px] font-medium text-[#68625B] hidden sm:inline whitespace-nowrap">
@@ -62,13 +70,13 @@ export const PrintedPriceList: React.FC = () => {
                     {item.priceDisplay}
                   </span>
 
-                  <button
-                    onClick={() => openBooking({ serviceId: item.id })}
-                    className="h-8 px-4 text-[13px] font-bold uppercase tracking-wide bg-[#181715] hover:bg-[#9F7A2C] text-[#F4EFE8] rounded-full transition-all duration-300"
+                  <Link
+                    to={`/book?service=${item.id}`}
+                    className="h-8 px-4 text-[13px] font-bold uppercase tracking-wide bg-[#181715] hover:bg-[#9F7A2C] text-[#F4EFE8] rounded-full transition-all duration-300 flex items-center justify-center select-none"
                     title={`Reserve ${item.name}`}
                   >
                     Reserve
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
             ))}
@@ -83,13 +91,13 @@ export const PrintedPriceList: React.FC = () => {
               </span>
             </div>
 
-            <button
-              onClick={() => openBooking()}
-              className="h-[52px] px-8 bg-[#181715] hover:bg-[#9F7A2C] text-[#F4EFE8] text-base font-bold tracking-wide rounded-full transition-all duration-300 flex items-center justify-center gap-3"
+            <Link
+              to="/book"
+              className="h-[52px] px-8 bg-[#181715] hover:bg-[#9F7A2C] text-[#F4EFE8] text-base font-bold tracking-wide rounded-full transition-all duration-300 flex items-center justify-center gap-3 select-none"
             >
               <Calendar className="w-5 h-5" />
               <span>Book Appointment</span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>

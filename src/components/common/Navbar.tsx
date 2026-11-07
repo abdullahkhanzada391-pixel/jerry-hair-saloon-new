@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
 import { SALON_INFO } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { MagneticButton } from './MagneticButton';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
     { name: 'Services', path: '/services' },
-    { name: 'Pricing', path: '/pricing' },
-    { name: 'Gallery', path: '/gallery' },
-    { name: 'About & Barbers', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Prices', path: '/pricing' },
+    { name: 'Book', path: '/book' },
   ];
 
   const isActive = (path: string) => {
@@ -27,7 +25,7 @@ export const Navbar: React.FC = () => {
 
   const handleBookClick = () => {
     setMobileMenuOpen(false);
-    openBooking();
+    navigate('/book');
   };
 
   return (
@@ -95,7 +93,7 @@ export const Navbar: React.FC = () => {
           </a>
 
           <MagneticButton
-            onClick={() => openBooking()}
+            onClick={() => navigate('/book')}
             className="h-[52px] px-8 bg-[#C9A24B] hover:bg-[#DEBA67] text-[#121110] font-bold text-base tracking-wide rounded-full shadow-[0_2px_12px_rgba(201,162,75,0.2)] transition-all duration-300 active:scale-95"
             aria-label="Book an Appointment"
           >
@@ -105,16 +103,16 @@ export const Navbar: React.FC = () => {
 
         {/* MOBILE MENU TOGGLE BUTTON */}
         <div className="flex items-center gap-4 lg:hidden">
-          <button
-            onClick={() => openBooking()}
-            className="h-10 px-4 bg-[#C9A24B] text-[#121110] font-bold text-sm tracking-wide rounded-full transition-all duration-300"
+          <Link
+            to="/book"
+            className="h-10 px-4 bg-[#C9A24B] text-[#121110] font-bold text-sm tracking-wide rounded-full transition-all duration-300 flex items-center justify-center"
           >
             Book
-          </button>
+          </Link>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-[#F4EFE8] hover:text-[#C9A24B] focus:outline-none focus:ring-2 focus:ring-[#C9A24B] rounded-lg transition-colors"
+            className="p-2 text-[#F4EFE8] hover:text-[#C9A24B] focus:outline-none focus:ring-2 focus:ring-[#C9A24B] rounded-lg transition-colors cursor-pointer"
             aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
             aria-expanded={mobileMenuOpen}
           >
@@ -162,7 +160,7 @@ export const Navbar: React.FC = () => {
             <div className="pt-8 border-t border-white/10 space-y-4">
               <button
                 onClick={handleBookClick}
-                className="w-full h-[52px] bg-[#C9A24B] text-[#121110] font-bold text-base tracking-wide rounded-full text-center transition-all duration-300"
+                className="w-full h-[52px] bg-[#C9A24B] text-[#121110] font-bold text-base tracking-wide rounded-full text-center transition-all duration-300 cursor-pointer"
               >
                 Book Appointment Now
               </button>

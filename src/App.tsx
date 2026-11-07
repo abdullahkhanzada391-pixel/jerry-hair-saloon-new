@@ -1,22 +1,24 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { BookingProvider } from './context/BookingContext';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
+import { ScrollToTop } from './components/common/ScrollToTop';
 import { Preloader } from './components/common/Preloader';
 import { NoiseOverlay } from './components/common/NoiseOverlay';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
-import { BookingModal } from './components/booking/BookingModal';
 
 // Code-split routes for optimal performance
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
+const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
 const ServicesPage = lazy(() => import('./pages/ServicesPage').then((m) => ({ default: m.ServicesPage })));
 const PricingPage = lazy(() => import('./pages/PricingPage').then((m) => ({ default: m.PricingPage })));
+const BookPage = lazy(() => import('./pages/BookPage').then((m) => ({ default: m.BookPage })));
 const GalleryPage = lazy(() => import('./pages/GalleryPage').then((m) => ({ default: m.GalleryPage })));
-const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
 const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
 
 const RouteLoadingFallback: React.FC = () => (
   <div className="min-h-[60vh] flex items-center justify-center bg-[#121110]">
@@ -40,12 +42,14 @@ const AnimatedRoutes: React.FC = () => {
         <Suspense fallback={<RouteLoadingFallback />}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/prices" element={<Navigate to="/pricing" replace />} />
+            <Route path="/book" element={<BookPage />} />
             <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="*" element={<HomePage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </motion.main>
@@ -59,6 +63,9 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#121110] text-[#F4EFE8] font-sans antialiased relative selection:bg-[#C9A24B] selection:text-[#121110]">
+      {/* Route & Hash Scroll Handler */}
+      <ScrollToTop />
+
       {/* 1.2s Editorial Curtain Preloader */}
       <Preloader />
 
@@ -71,11 +78,8 @@ const AppContent: React.FC = () => {
       {/* Page Content with Code-Split Routes and Framer Motion transitions */}
       <AnimatedRoutes />
 
-      {/* 14 Footer: Maps, Timings, Jummah Notice, Socials */}
+      {/* Golden Footer */}
       <Footer />
-
-      {/* Universal Booking Modal */}
-      <BookingModal />
     </div>
   );
 };

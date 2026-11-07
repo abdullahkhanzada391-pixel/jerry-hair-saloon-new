@@ -3,11 +3,9 @@ import { motion } from 'framer-motion';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { FEATURED_SERVICES } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { BrandBadge } from '../common/BrandBadge';
 
 export const FeaturedServices: React.FC = () => {
-  const { openBooking } = useBooking();
 
   return (
     <section className="py-16 md:py-24 lg:py-28 bg-[#0E0D0C] relative border-b border-white/10">
@@ -86,13 +84,13 @@ export const FeaturedServices: React.FC = () => {
                     </span>
                   </div>
 
-                  <button
-                    onClick={() => openBooking({ serviceId: service.id })}
-                    className="h-10 px-5 bg-[#C9A24B]/10 hover:bg-[#C9A24B] text-[#C9A24B] hover:text-[#121110] border border-[#C9A24B]/30 hover:border-[#C9A24B] text-sm font-bold tracking-wide rounded-full transition-all duration-300 flex items-center gap-2"
+                  <Link
+                    to={`/book?service=${service.id}`}
+                    className="h-10 px-5 bg-[#C9A24B]/10 hover:bg-[#C9A24B] text-[#C9A24B] hover:text-[#121110] border border-[#C9A24B]/30 hover:border-[#C9A24B] text-sm font-bold tracking-wide rounded-full transition-all duration-300 flex items-center gap-2 select-none"
                   >
                     <span>Book this</span>
                     <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             </motion.div>

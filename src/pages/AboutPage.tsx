@@ -1,24 +1,71 @@
-import React, { useEffect } from 'react';
-import { Award, Calendar, ShieldCheck, Heart } from 'lucide-react';
-import { BARBERS } from '../config/salonInfo';
-import { useBooking } from '../context/BookingContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { BrandBadge } from '../components/common/BrandBadge';
+import { MeetBarbers } from '../components/home/MeetBarbers';
+import { BeforeAfterSlider } from '../components/home/BeforeAfterSlider';
+import { BookingCtaBand } from '../components/home/BookingCtaBand';
+
+interface CounterProps {
+  end: number;
+  suffix?: string;
+  decimals?: number;
+}
+
+const AnimatedCounter: React.FC<CounterProps> = ({ end, suffix = '', decimals = 0 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    let start = 0;
+    const duration = 1800; // ms
+    const stepTime = 20; // 50 updates per sec
+    const steps = duration / stepTime;
+    const increment = end / steps;
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [isInView, end]);
+
+  return (
+    <span ref={ref} className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#C9A24B]">
+      {decimals > 0 ? count.toFixed(decimals) : Math.floor(count).toLocaleString()}
+      {suffix}
+    </span>
+  );
+};
 
 export const AboutPage: React.FC = () => {
-  const { openBooking } = useBooking();
-
   useEffect(() => {
     document.title =
       "About Jerry & Master Barbers | Serving Allama Iqbal Town Since 2016";
-    window.scrollTo(0, 0);
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Learn the story of Jerry Hair Saloon, founded in 2016 in Neelum Block, Allama Iqbal Town, Lahore. Meet our master barbers and discover our tradition of craft barbering.'
+      );
+    }
   }, []);
 
   return (
-    <div className="py-16 md:py-24 lg:py-28 bg-[#121110] text-[#F4EFE8]">
-      {/* Hero Narrative: max-w-7xl px-6 lg:px-8 */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          <div className="lg:col-span-7 space-y-6">
+    <div className="w-full bg-[#121110] text-[#F4EFE8]">
+      {/* 1. Page Header */}
+      <section className="pt-16 pb-12 md:pt-24 md:pb-16 bg-[#121110] border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-white/10 text-[13px] font-bold tracking-editorial uppercase text-[#C9A24B] mb-4">
               <BrandBadge size="sm" />
               <span>Established 2016 · Allama Iqbal Town</span>
@@ -31,161 +78,121 @@ export const AboutPage: React.FC = () => {
             <p className="font-body-lg text-[#F4EFE8]/70 max-w-[65ch] leading-relaxed">
               When Jerry opened this saloon in 2016 on Neelum Block main road, most neighbourhood barbers were rushing clients in ten minutes with blunt blades and cheap cologne. Jerry set out with a simple premise: a haircut is a ritual, not a chore.
             </p>
-
-            <p className="font-body-lg text-[#F4EFE8]/70 max-w-[65ch] leading-relaxed">
-              We started with just two chairs. Today, we have six master stations running, but the ethos remains unaltered: sterilized single-use blades, calibrated fades, zero shortcuts, and a respectful atmosphere where gentlemen from Moon Market, Karim Block, and Wahdat Road feel completely at home.
-            </p>
-
-            <div className="pt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 lg:gap-8 border-t border-white/10">
-              <div>
-                <span className="text-3xl sm:text-4xl font-extrabold text-[#C9A24B] block">9+</span>
-                <span className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-1 block">Years in Iqbal Town</span>
-              </div>
-              <div>
-                <span className="text-3xl sm:text-4xl font-extrabold text-[#C9A24B] block">6</span>
-                <span className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-1 block">Full-Service Chairs</span>
-              </div>
-              <div>
-                <span className="text-3xl sm:text-4xl font-extrabold text-[#C9A24B] block">25k+</span>
-                <span className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-1 block">Satisfied Cuts</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-              <img
-                src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=900&q=80"
-                alt="Jerry master barber at work in Neelum Block"
-                className="w-full h-[450px] object-cover filter contrast-[1.08]"
-              />
-              <div className="absolute bottom-0 inset-x-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
-                <span className="text-[13px] font-bold text-[#C9A24B] uppercase tracking-editorial block mb-1">
-                  The Founder
-                </span>
-                <div className="text-xl font-bold text-[#F4EFE8]">
-                  Jerry
-                </div>
-                <div className="text-sm text-white/70">
-                  12 Years Craft Experience · Master of Traditional Hot Shaves
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* The 4 Barbers Detailed Section */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-20">
-        <div className="text-center mb-12">
-          <span className="text-[13px] font-bold uppercase tracking-editorial text-[#C9A24B] block mb-2">
-            Our Team
-          </span>
-          <h2 className="font-section-h2 text-[#F4EFE8]">
-            The Master Barbers
-          </h2>
-          <p className="font-body text-base text-[#F4EFE8]/70 max-w-[65ch] mx-auto mt-2">
-            Each barber brings a distinct signature craft. Book directly with your preferred chair.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {BARBERS.map((barber) => (
-            <div
-              key={barber.id}
-              className="bg-[#181715] border border-white/10 rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row gap-6 hover:border-[#C9A24B]/40 hover:-translate-y-1 transition-all duration-300 ease-out shadow-xl"
-            >
-              <div className="w-full sm:w-48 h-60 rounded-xl overflow-hidden flex-shrink-0 bg-[#0E0D0C] border border-white/10">
-                <img
-                  src={barber.image}
-                  alt={barber.name}
-                  className="w-full h-full object-cover filter contrast-[1.06]"
-                />
-              </div>
-
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="font-h3 text-[#F4EFE8] mb-1">
-                    {barber.name}
-                  </h3>
-                  <div className="text-sm font-semibold text-[#C9A24B] uppercase tracking-wide mb-3">
-                    {barber.role} · {barber.experience}
-                  </div>
-
-                  <div className="bg-[#121110] border border-white/10 p-3 rounded-xl text-sm mb-4">
-                    <span className="text-[#C9A24B] font-bold block text-[13px] uppercase tracking-editorial mb-1">Craft Specialty</span>
-                    <span className="text-[#F4EFE8] font-semibold">{barber.specialty}</span>
-                  </div>
-
-                  <p className="font-body text-sm text-[#F4EFE8]/70 leading-relaxed mb-6">
-                    {barber.bio}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => openBooking({ barberId: barber.id })}
-                  className="mt-auto w-full h-[52px] px-8 bg-[#C9A24B] hover:bg-[#DEBA67] text-[#121110] font-bold text-base tracking-wide rounded-full transition-all duration-300 flex items-center justify-center gap-3"
+      {/* 2. The Existing About Section (Jerry's story, photos & animated counters) */}
+      <section className="py-16 md:py-24 bg-[#121110] relative overflow-hidden border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Overlapping photo collage (5 cols) */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative mx-auto max-w-md lg:max-w-none">
+                {/* Primary Photo */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.7 }}
+                  className="relative z-10 w-10/12 overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
                 >
-                  <Calendar className="w-5 h-5 text-[#121110]" />
-                  <span>Reserve Chair with {barber.name.split(' ')[0]}</span>
-                </button>
+                  <img
+                    src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80"
+                    alt="Jerry master barber shaving customer with straight razor"
+                    className="w-full h-80 sm:h-96 object-cover filter contrast-[1.08] hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-[13px] font-medium text-white/70">
+                    Jerry, Founder &amp; Master Barber
+                  </div>
+                </motion.div>
+
+                {/* Offset & rotated secondary photo */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, rotate: 0 }}
+                  whileInView={{ opacity: 1, scale: 1, rotate: 3 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="absolute right-0 -bottom-8 w-7/12 z-20 overflow-hidden rounded-2xl border-2 border-[#121110] shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=80"
+                    alt="Jerry Hair Saloon shop floor interior with leather chairs"
+                    className="w-full h-56 sm:h-64 object-cover filter contrast-[1.05]"
+                  />
+                  <div className="absolute top-3 right-3 bg-[#121110]/90 px-3 py-1 text-[13px] font-bold text-[#C9A24B] border border-[#C9A24B]/30 rounded-full">
+                    6-CHAIR SALOON
+                  </div>
+                </motion.div>
+
+                {/* Brass decorative corner element */}
+                <div className="absolute -top-4 -left-4 w-16 h-16 border-t-2 border-l-2 border-[#C9A24B]/40 pointer-events-none" />
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* The Shop Rules / Values */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="bg-[#161513] border border-white/10 p-6 lg:p-8 rounded-2xl shadow-xl">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-[13px] font-bold uppercase tracking-editorial text-[#C9A24B] block mb-2">
-              Our Code
-            </span>
-            <h2 className="font-section-h2 text-[#F4EFE8]">
-              Three Non-Negotiable Rules
-            </h2>
+            {/* Editorial Story & Animated Counters (7 cols) */}
+            <div className="lg:col-span-7 space-y-6 pt-8 lg:pt-0">
+              <div>
+                <div className="flex items-center gap-2.5 mb-4">
+                  <BrandBadge size="sm" />
+                  <span className="text-[13px] font-bold tracking-editorial uppercase text-[#C9A24B]">
+                    Origin Story
+                  </span>
+                </div>
+                <h2 className="font-section-h2 text-[#F4EFE8] mb-4">
+                  Started in 2016 with two chairs. Still the sharpest seat in Allama Iqbal Town.
+                </h2>
+              </div>
+
+              <div className="space-y-4 font-body text-[#F4EFE8]/70 max-w-[65ch] leading-relaxed mb-12">
+                <p>
+                  Jerry started this shop nine years ago right here on Neelum Block main road. No fancy marketing, no investor buzzwords — just two vintage hydraulic chairs, scissors sharpened by hand, and a straight-razor shave you couldn’t get anywhere else between Moon Market and Karim Block.
+                </p>
+                <p>
+                  Today, we’re a 6-chair lounge. But the rule hasn’t changed once: we never rush a fade to turn over a chair. You sit down, Jerry or one of the boys pours you hot cardamom chai if there’s a wait, and you walk out with lines sharp enough to cut paper.
+                </p>
+              </div>
+
+              {/* 4 Animated Counter Statistics */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 lg:gap-8 pt-8 border-t border-white/10">
+                <div>
+                  <AnimatedCounter end={9} suffix="+" />
+                  <div className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-2">
+                    Years of cuts
+                  </div>
+                </div>
+                <div>
+                  <AnimatedCounter end={25000} suffix="+" />
+                  <div className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-2">
+                    Haircuts delivered
+                  </div>
+                </div>
+                <div>
+                  <AnimatedCounter end={4.9} suffix="" decimals={1} />
+                  <div className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-2">
+                    Google rating (480+)
+                  </div>
+                </div>
+                <div>
+                  <AnimatedCounter end={6} suffix=" Barbers" />
+                  <div className="text-sm font-semibold text-[#F4EFE8]/55 uppercase tracking-wide mt-2">
+                    Chairs running
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1E1D1A] border border-[#C9A24B]/30 flex items-center justify-center text-[#C9A24B]">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <div className="font-h4 text-[#F4EFE8]">
-                Sterilized Single-Use Blades
-              </div>
-              <p className="font-body text-sm text-[#F4EFE8]/70 leading-relaxed">
-                We never reuse a straight-razor blade. Every single client gets a fresh Japanese feather blade unpacked in plain view.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1E1D1A] border border-[#C9A24B]/30 flex items-center justify-center text-[#C9A24B]">
-                <Heart className="w-6 h-6" />
-              </div>
-              <div className="font-h4 text-[#F4EFE8]">
-                Respect the Friday Break
-              </div>
-              <p className="font-body text-sm text-[#F4EFE8]/70 leading-relaxed">
-                We pause every Friday from 1:00 PM to 3:00 PM for Jummah prayers. We return energized and ready for the weekend rush.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1E1D1A] border border-[#C9A24B]/30 flex items-center justify-center text-[#C9A24B]">
-                <Award className="w-6 h-6" />
-              </div>
-              <div className="font-h4 text-[#F4EFE8]">
-                Zero Rushed Appointments
-              </div>
-              <p className="font-body text-sm text-[#F4EFE8]/70 leading-relaxed">
-                Even if there is a queue outside on Sunday afternoon, your fade gets the full 45 minutes of scissor and clipper craft.
-              </p>
-            </div>
-          </div>
         </div>
-      </div>
+      </section>
+
+      {/* 3. Meet the Barbers Section (with id="barbers") */}
+      <MeetBarbers />
+
+      {/* 4. The Before/After Slider */}
+      <BeforeAfterSlider />
+
+      {/* 5. Booking CTA Band */}
+      <BookingCtaBand />
     </div>
   );
 };

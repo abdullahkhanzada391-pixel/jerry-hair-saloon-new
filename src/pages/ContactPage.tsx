@@ -17,7 +17,14 @@ export const ContactPage: React.FC = () => {
   useEffect(() => {
     document.title =
       "Contact & Directions | Jerry Hair Saloon, Neelum Block, Allama Iqbal Town, Lahore";
-    window.scrollTo(0, 0);
+
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Find Jerry Hair Saloon on Neelum Block main road, Allama Iqbal Town, Lahore. Live opening hours, Friday Jummah break details, phone, and direct WhatsApp contact.'
+      );
+    }
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {

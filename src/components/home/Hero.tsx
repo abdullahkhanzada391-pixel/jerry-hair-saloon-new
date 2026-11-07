@@ -1,21 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Star, ChevronDown, Calendar, ShieldCheck } from 'lucide-react';
 import { SALON_INFO } from '../../config/salonInfo';
-import { useBooking } from '../../context/BookingContext';
 import { MagneticButton } from '../common/MagneticButton';
 
 export const Hero: React.FC = () => {
-  const { openBooking } = useBooking();
+  const navigate = useNavigate();
 
   const headlineLines = ['Sharp cuts.', 'Clean fades.', 'No nonsense.'];
-
-  const scrollToPrices = () => {
-    const el = document.getElementById('price-list');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[#121110]">
@@ -92,7 +85,7 @@ export const Hero: React.FC = () => {
           className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
         >
           <MagneticButton
-            onClick={() => openBooking()}
+            onClick={() => navigate('/book')}
             className="w-full sm:w-auto h-[52px] px-8 bg-[#C9A24B] hover:bg-[#DEBA67] text-[#121110] font-bold text-base tracking-wide rounded-full shadow-[0_4px_20px_rgba(201,162,75,0.25)] flex items-center justify-center gap-3 transition-all duration-300"
             aria-label="Book a Chair"
           >
@@ -101,8 +94,8 @@ export const Hero: React.FC = () => {
           </MagneticButton>
 
           <button
-            onClick={scrollToPrices}
-            className="w-full sm:w-auto h-[52px] px-8 bg-transparent hover:bg-white/5 border border-white/20 hover:border-[#C9A24B] text-[#F4EFE8] font-bold text-base tracking-wide rounded-full transition-all duration-300 text-center"
+            onClick={() => navigate('/pricing')}
+            className="w-full sm:w-auto h-[52px] px-8 bg-transparent hover:bg-white/5 border border-white/20 hover:border-[#C9A24B] text-[#F4EFE8] font-bold text-base tracking-wide rounded-full transition-all duration-300 text-center cursor-pointer"
           >
             See Prices
           </button>
